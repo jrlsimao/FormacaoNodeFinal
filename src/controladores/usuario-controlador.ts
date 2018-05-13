@@ -1,10 +1,8 @@
 import {Request, Response} from 'express';
 import {UsuarioInterface} from '../interfaces/usuario-interface';
 import {PessoaInterface} from '../interfaces/pessoa-interface';
-import {LocalUsuarioInterface} from '../interfaces/local-usuario-interface';
 import {Usuario} from '../config/bancoDados/Schemas/usuario-schema';
 import {Pessoa} from '../config/bancoDados/Schemas/pessoa-schema';
-import {LocalizacaoUsuario} from '../config/bancoDados/Schemas/local-usuario-schema';
 import axios, { AxiosStatic, AxiosInstance } from 'axios';
 
 
@@ -106,84 +104,6 @@ export default class UsuarioControlador {
             return false;
         }
 
-    }
-
-    public async cadastrarLocalizacaoUser(req: Request, resp: Response){
-        try{
-            let localizacaoinstancia = await this.preencheLocalizacao(req.body);
-            if(localizacaoinstancia){
-                const sucesso = await localizacaoinstancia.save();
-                if(sucesso){
-                    resp.status(200).send(sucesso);
-                }else{
-                    resp.status(500).send('Erro a cadastrar localizacao');
-                }
-            }
-            else{
-                resp.status(500).send('Erro a cadastrar localizacao');
-            }
-        }catch(Error){
-            console.log(Error);
-            resp.status(500).send('Erro no método cadastrar localizacao');
-        }
-    }
-
-    public async updateLocalizacao(req: Request, resp: Response){
-        try{
-            console.log(req.body);
-            const localizacao = await LocalizacaoUsuario.findOneAndUpdate({usuario:req.body.usuario}, {localizacao: {type: 'Point', coordinates: req.body.coordinates}});
-            if(localizacao){
-                resp.status(200).send(localizacao);
-            }
-            else{
-                resp.status(500).send('Erro na actualizacao da localizacao');
-            }
-        }
-        catch(error){
-            console.log(error);
-            resp.status(500).send('Erro no método de actualizacao da localizacao');
-        }
-    }
-
-    public async getLocalizacao(req:Request, resp:Response){
-        try{
-            const localizacao = await LocalizacaoUsuario.findOne({usuario:req.params.id});
-            if(localizacao){
-                resp.status(200).send(localizacao.localizacao.coordinates);
-            }else{
-                resp.status(500).send('Erro na procura de localizacao');
-            }
-        }catch(Erro){
-            console.log(Erro);
-            resp.status(500).send('Erro no metodo de devolucao da localizacao');
-        }
-    }
-
-    private async preencheLocalizacao(payload:any): Promise<LocalUsuarioInterface|undefined>{
-        if(payload.usuario){
-            const usuarioResult = await Usuario.findById(payload.usuario);
-            console.log(usuarioResult);
-            if(usuarioResult && payload.lat && payload.log){
-                let instance = await new LocalizacaoUsuario({
-                    usuario: usuarioResult._id,
-                    localizacao: {
-                        type: 'Point',
-                        coordinates: [payload.lat, payload.log]
-                    }
-                });
-                if(instance){
-                    return instance;
-                }
-            }
-            else{
-                console.log('morreu');
-                return <LocalUsuarioInterface>{};
-            }
-        }
-        else{
-            console.log('morreu mai alto');
-            return <LocalUsuarioInterface>{};
-        }
     }
 
     /*
