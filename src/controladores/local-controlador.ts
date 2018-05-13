@@ -61,14 +61,14 @@ export class LocalizacaoClass{
     private async preencheLocalizacao(payload:any): Promise<LocalInterface|undefined>{
         if(payload.usuario){
             const usuarioResult = await Usuario.findById(payload.usuario);
-            console.log(usuarioResult);
             if(usuarioResult && payload.lat && payload.log){
                 let instance = await new Localizacao({
                     usuario: usuarioResult._id,
                     localizacao: {
                         type: 'Point',
                         coordinates: [payload.lat, payload.log]
-                    }
+                    },
+                    motorista: payload.motorista
                 });
                 if(instance){
                     return instance;

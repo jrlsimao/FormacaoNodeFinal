@@ -10,4 +10,5 @@ export interface MotoristaInterface extends Document{
     morada?: EnderecoInterface;
     telefone?: String;
     veiculo?: VeiculoInterface;
+    status?: boolean;
 }

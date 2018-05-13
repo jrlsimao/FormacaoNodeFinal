@@ -1,7 +1,8 @@
 import { Servidor } from './config/servidor/servidor';
 import {BancoDeDados} from './config/bancoDados/DB';
-import {Rotas} from './config/servidor/rotas';
+import {RotasUser} from './config/servidor/rotas';
 import {RotasLocal} from './config/servidor/rotas-local'
+import {RotasMotorista} from './config/servidor/rotas-motorista';
 const appServidor = new Servidor().getAppConfig();
 const appDB = new BancoDeDados().getMongo();
 //https://www.sitepoint.com/using-json-web-tokens-node-js/
@@ -19,6 +20,7 @@ appServidor.get('/hello', (req, res) => {
 
 
 appServidor.listen(3000, () => {
-  let rotas = new Rotas(appServidor);
+  let rotas = new RotasUser(appServidor);
   let rotasLocalizacao = new RotasLocal(appServidor);
+  let rotasMotorista = new RotasMotorista(appServidor);
 });

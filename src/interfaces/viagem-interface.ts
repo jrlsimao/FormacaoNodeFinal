@@ -1,6 +1,6 @@
 import {Document, Schema} from 'mongoose';
 
-export interface ViagemIILocalizacaonterface extends Document{
+export interface ViagemInterface extends Document{
     origem : [Number];
     destino: [Number];
     dataViagem: Date;

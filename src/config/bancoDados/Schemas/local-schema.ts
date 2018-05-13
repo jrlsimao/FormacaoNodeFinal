@@ -14,6 +14,9 @@ const LocalSchema = new Schema({
             type:[Number],
             index: '2dsphere'
         }
+    },
+    motorista:{
+        type:Boolean
     }
 });
 

@@ -1,6 +1,6 @@
 import * as Express from 'express';
 import UsuarioControlador from '../../controladores/usuario-controlador';
-export class Rotas {
+export class RotasUser {
     private expressApp : Express.Application;
     private localController : any;
 

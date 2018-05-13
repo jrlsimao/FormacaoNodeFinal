@@ -5,4 +5,5 @@ export interface LocalInterface extends Document{
     usuario: Schema.Types.ObjectId;
     localizacao: LocalizacaoInterface;
     data?: Date;
+    motorista?:Boolean
 }

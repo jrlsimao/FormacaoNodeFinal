@@ -6,5 +6,4 @@ export interface VeiculoInterface extends Document{
     ano?: Number;
     cor?: String;
     matricula?: String;
-    status?: boolean;
 }
