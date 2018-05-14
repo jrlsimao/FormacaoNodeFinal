@@ -1,4 +1,4 @@
-import {Request, Response} from 'express';
+import {Request, Response, NextFunction} from 'express';
 import {UsuarioInterface} from '../interfaces/usuario-interface';
 import {PessoaInterface} from '../interfaces/pessoa-interface';
 import {Usuario} from '../config/bancoDados/Schemas/usuario-schema';
@@ -57,7 +57,7 @@ export default class UsuarioControlador {
         }
     }
 
-    public async eliminarPerson( req:Request, resp:Response){
+    public async eliminarPerson( req:Request, resp:Response, next:NextFunction){
         if(req.params.id){
             try{
                 const resultado = await Pessoa.findById(req.params.id);
@@ -65,9 +65,15 @@ export default class UsuarioControlador {
                     const elimUsuario = Usuario.findByIdAndRemove(resultado.Usuario);
                     if(elimUsuario){
                         const elimPessoa = await Pessoa.findByIdAndRemove(req.params.id);
+                        if(elimPessoa){
+                            resp.status(200).send('Pessoa Eliminada');
+                        }
+                        else{
+                            resp.status(500).send('Usuario Eliminado mas Pessoa não foi encontrada');
+                        }
                     }
                     else{
-                        resp.status(500).send('Usuario Eliminado mas Pessoa não foi encontrada');
+                        resp.status(500).send('Usuario Não foi Encontrado');
                     }
                 }
                 else{
@@ -98,7 +104,7 @@ export default class UsuarioControlador {
             resp.status(500).send('Request Inválido');
         }
     }
-    
+
     public async login(req:Request, resp: Response){
         
         if(Object.keys(req.body).length !== 0 && req.body.constructor === Object){
@@ -148,6 +154,31 @@ export default class UsuarioControlador {
             return false;
         }
 
+    }
+    //Separar o Login noutra classe
+    public async verificaLogin(req:Request, resp:Response, next:NextFunction){
+        if(req.headers.tokenassinado){
+            try{
+                let resultado = await axios.post(
+                    'http://127.0.0.1:3002/buscarToken',
+                    {
+                        tokenassinado: req.headers.tokenassinado
+                    }
+                );
+                if(resultado && resultado.data.result === 'Valido'){
+                    next();
+                }
+                else{
+                    resp.status(500).send('Token Inválido - Sessão Expirou');
+                }
+            }
+            catch(Error){
+                resp.status(500).send('Erro na função de Verificação de Login');
+            }
+        }
+        else{
+            resp.status(500).send('Token não recebido');
+        }
     }
 
     /*

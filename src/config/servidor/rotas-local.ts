@@ -12,6 +12,7 @@ export class RotasLocal {
         this.expressApp.put('/updateCoordinates', this.localController.updateLocalizacao.bind(this.localController));
         this.expressApp.delete('/removeGPSPosition/:id', this.localController.removeLocalizacao.bind(this.localController));
         this.expressApp.get('/getCurrentPosition/:id', this.localController.getLocalizacao.bind(this.localController));
+        this.expressApp.post('/setGPSCoords', this.localController.setLocalizacao.bind(this.localController));
     }
 
 

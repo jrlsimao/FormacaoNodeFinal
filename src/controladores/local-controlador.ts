@@ -5,7 +5,29 @@ import {Usuario} from '../config/bancoDados/Schemas/usuario-schema';
 
 export class LocalizacaoClass{
 
+    public async setLocalizacao(req: Request, resp: Response){
+        console.log(req.body.usuario);
+        if(req.body.usuario){
+            try{
+                const existeLocalizacao = await Localizacao.findOne({usuario: req.body.usuario});
+                console.log(existeLocalizacao);
+                if(existeLocalizacao){
+                    this.updateLocalizacao(req, resp);
+                }else{
+                    console.log('vamos cadastrar');
+                    this.cadastrarLocalizacaoUser(req, resp);
+                }
+            }
+            catch{
+                resp.status(500).send('Erro no SetLocalizacao');
+            }
+        }else{
+            resp.status(500).send('Request incorrecto');
+        }
+    }
+
     public async cadastrarLocalizacaoUser(req: Request, resp: Response){
+        console.log('Vou cadastrar');
         try{
             let localizacaoinstancia = await this.preencheLocalizacao(req.body);
             if(localizacaoinstancia){
@@ -28,7 +50,7 @@ export class LocalizacaoClass{
     public async updateLocalizacao(req: Request, resp: Response){
         try{
             console.log(req.body);
-            const localizacao = await Localizacao.findOneAndUpdate({usuario:req.body.usuario}, {localizacao: {type: 'Point', coordinates: req.body.coordinates}});
+            const localizacao = await Localizacao.findOneAndUpdate({usuario:req.body.usuario}, {localizacao: {type: 'Point', coordinates: [req.body.lat, req.body.log]}});
             if(localizacao){
                 resp.status(200).send(localizacao);
             }
