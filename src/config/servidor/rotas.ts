@@ -8,6 +8,8 @@ export class RotasUser {
         this.expressApp = serverApp;
         this.localController = new UsuarioControlador();
         this.expressApp.post('/createUserAPerson', this.localController.criarUsuario.bind(this.localController));
+        this.expressApp.put('/updatePerson', this.localController.updatePerson.bind(this.localController));
+        this.expressApp.delete('/deletePerson', this.localController.eliminarPerson.bind(this.localController));
         this.expressApp.post('/login', this.localController.login.bind(this.localController));
     }
 

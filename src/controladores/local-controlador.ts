@@ -58,6 +58,24 @@ export class LocalizacaoClass{
         }
     }
 
+    public async removeLocalizacao(req:Request, resp:Response){
+        if(req.params.id){
+            try{
+                const eliminaLocalizacao = await Localizacao.findByIdAndRemove(req.params.id);
+                if(eliminaLocalizacao){
+                    resp.status(200).send('Localizacao Eliminada');
+                }
+                else{
+                    resp.status(500).send('Localizacao não encontrada');
+                }
+            }catch{
+                resp.status(500).send('Erro no nétodo de eliminação da Localização');
+            }
+        }else{
+            resp.status(500).send('Id não encontrado no Request');
+        }
+    }
+
     private async preencheLocalizacao(payload:any): Promise<LocalInterface|undefined>{
         if(payload.usuario){
             const usuarioResult = await Usuario.findById(payload.usuario);

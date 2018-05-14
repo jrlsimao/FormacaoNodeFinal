@@ -52,9 +52,53 @@ export default class UsuarioControlador {
                 console.log(Erro);
                 resp.status(500).send('Erro no metodo de criacao');
             }
+        }else{
+            resp.status(500).send('Request Inválido');
         }
     }
 
+    public async eliminarPerson( req:Request, resp:Response){
+        if(req.params.id){
+            try{
+                const resultado = await Pessoa.findById(req.params.id);
+                if(resultado){
+                    const elimUsuario = Usuario.findByIdAndRemove(resultado.Usuario);
+                    if(elimUsuario){
+                        const elimPessoa = await Pessoa.findByIdAndRemove(req.params.id);
+                    }
+                    else{
+                        resp.status(500).send('Usuario Eliminado mas Pessoa não foi encontrada');
+                    }
+                }
+                else{
+                    resp.status(500).send('Pessoa não foi encontrada');
+                }
+            }
+            catch{
+                resp.status(500).send('Erro no método de eliminar Pessoa');
+            }
+        }else{
+            resp.status(500).send('Não foi encontrado ID na Call');
+        }
+    }
+
+    public async updatePerson(req: Request, resp: Response){
+        if(Object.keys(req.body).length !== 0 && req.body.constructor === Object){
+            try{
+                const resultado = await Pessoa.findByIdAndUpdate(req.body.id, <PessoaInterface>req.body);
+                if(resultado){
+                    resp.status(200).send(resultado);
+                }else{
+                    resp.status(500).send('Não foi encontrado');
+                }
+            }catch{
+                resp.status(500).send('Erro no método de Update da Pessoa');
+            }
+        }else{
+            resp.status(500).send('Request Inválido');
+        }
+    }
+    
     public async login(req:Request, resp: Response){
         
         if(Object.keys(req.body).length !== 0 && req.body.constructor === Object){
